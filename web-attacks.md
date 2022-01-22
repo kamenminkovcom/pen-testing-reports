@@ -63,4 +63,33 @@ Clicking on the **Check Stock** button for a product sends a POST request to the
 
 ``productId=4&storeId=1|whoami``
 
-# [Time delay OS Command Injection ](https://portswigger.net/web-security/os-command-injection/lab-blind-time-delays)
+# [Time delay OS Command Injection](https://portswigger.net/web-security/os-command-injection/lab-blind-time-delays)
+
+For this one we are dealing with a blind injection, meaning we will not receive a response feedback from the server, so we will have to somehow distinguish if our injection works or not. In our case, a request without a feedback is present when the "Feedback" form is sumbitted. We can try to append ``ping -c 10 localhost`` to every field and if we do not receive a response immediately, we will be sure that our injection works.
+
+In our case the desired POST body is:
+``name=name&email=name%40name.com||ping+-c+10+localhost||&subject=subject&message=something``
+
+# [Reflected XSS](https://portswigger.net/web-security/cross-site-scripting/reflected/lab-html-context-nothing-encoded)
+
+This is quite simple. We will just need to add, as a search term in the url, a script tag with some JavaScript code inside. Something like the following:
+
+``search=<script>alert("pishi%20i%20bqgai")</script>``
+
+# [Stored XSS](https://portswigger.net/web-security/cross-site-scripting/stored/lab-html-context-nothing-encoded)
+
+This time we send JavaScript code as a comment by using ``script`` tag, this will be sent to the server and once someone fetches the comment, the JavaScript code will be executed. In our case it should be something like the following:
+
+``<script>alert('Alert!')</script>``
+
+However, it could be much more dangerous like a script which collects all the client data.
+
+The POST request body for the comment in our case will be:
+
+``postId=6&comment=%3Cscript%3Ealert%28%27something%27%29%3C%2Fscript%3E&name=name&email=name%40name.com&website=http%3A%2F%2Fname.com``
+
+# [DOM based XSS](https://portswigger.net/web-security/cross-site-scripting/dom-based/lab-document-write-sink)
+
+For this task we need to open the browser dev tools. When we do that, we should type something into the search box. We can observe that there is an ``img`` tag (because reasons) which has a ``src`` attribute with our search term to the end. For example, if we search for ``bla`` the ``img`` tag will look like: ``<img src="/resources/images/tracker.gif?searchTerms=bla">``. So, we can take advantage of that by placing another ``img`` tag with ``onerror`` event. In our case it could look like the following:
+
+``"><img onerror="alert()" src=""/>``
