@@ -8,6 +8,8 @@ Now, we can try exploiting the server by appending  ``'+union+select+null--+`` t
 
 :heavy_check_mark: The desired request is ``'+union+select+null,null,null--+``
 
+![Screenshot from 2022-01-23 00-55-08](https://user-images.githubusercontent.com/19424915/150658016-e56f3c4a-b944-4574-a769-48e025b98889.png)
+
 # [SQL Union from other tables](https://portswigger.net/web-security/sql-injection/union-attacks/lab-retrieve-data-from-other-tables)
 
 We can use the same approach as in the previous task. The only difference will be the fact that we have to select some data from another database table.
@@ -22,6 +24,9 @@ We receive a list of usernames and passwords which contains the desired ``admini
 username: administrator,
 password: ha9wahag68c5asob27tp
 ``
+
+![SQL-Union-from-other-tables](https://user-images.githubusercontent.com/19424915/150657622-288e3926-ef7b-4b15-9fba-5e44f49a78ba.png)
+
 
 # [SQL Login bypass](https://portswigger.net/web-security/sql-injection/lab-login-bypass)
 
@@ -39,6 +44,8 @@ Based on all of the above being said we can try to send a request to the server 
 
 This is enough to log in as the ``administrator`` user.
 
+![Screenshot from 2022-01-23 00-48-52](https://user-images.githubusercontent.com/19424915/150658032-4a988f15-c976-42ca-a03a-dcf3d6758c27.png)
+
 # [SQL Hidden data](https://portswigger.net/web-security/sql-injection/lab-retrieve-hidden-data)
 
 We can use the same approach as in the previous task to make the ``WHERE`` expression to return ``true``. So, we can try sending the following as a query:
@@ -46,6 +53,8 @@ We can use the same approach as in the previous task to make the ``WHERE`` expre
 :heavy_check_mark: ``category='+OR+1=1+--+``
 
 This will retrieve all the data we need.
+
+![Screenshot from 2022-01-23 00-51-31](https://user-images.githubusercontent.com/19424915/150658026-8fc294a5-21be-4817-80b3-38abea8dd48a.png)
 
 # [Time based SQL injection](https://portswigger.net/web-security/sql-injection/blind/lab-time-delays)
 
@@ -57,11 +66,15 @@ However, we do not know the type and the version of the database, the ``sleep`` 
 
 :heavy_check_mark: ``TrackingId:id' || pg_sleep(10) -- ``
 
+![time-based-sql](https://user-images.githubusercontent.com/19424915/150657655-4a828581-e8b2-418f-aff3-9e74b49205db.png)
+
 # [Simple OS Command injection](https://portswigger.net/web-security/os-command-injection/lab-simple)
 
 Clicking on the **Check Stock** button for a product sends a POST request to the server. We can try manipulating one of the params by attaching the ``whoami`` command. So, we will need to send a request containing something like the following:
 
 :heavy_check_mark: ``productId=4&storeId=1|whoami``
+
+![whoami](https://user-images.githubusercontent.com/19424915/150657667-e24a7784-5e64-49c8-b962-190eeb57851d.png)
 
 # [Time delay OS Command Injection](https://portswigger.net/web-security/os-command-injection/lab-blind-time-delays)
 
@@ -69,6 +82,8 @@ For this one we are dealing with a blind injection, meaning we will not receive 
 
 In our case the desired POST body is:
 :heavy_check_mark: ``name=name&email=name%40name.com||ping+-c+10+localhost||&subject=subject&message=something``
+
+![time-delay-os](https://user-images.githubusercontent.com/19424915/150657683-6b4f074b-c873-4aa1-b7e7-7cfc659d5119.png)
 
 # [Reflected XSS](https://portswigger.net/web-security/cross-site-scripting/reflected/lab-html-context-nothing-encoded)
 
@@ -90,6 +105,8 @@ The POST request body for the comment in our case will be:
 
 # [DOM based XSS](https://portswigger.net/web-security/cross-site-scripting/dom-based/lab-document-write-sink)
 
-For this task we need to open the browser dev tools. When we do that, we should type something into the search box. We can observe that there is an ``img`` tag (because reasons) which has a ``src`` attribute with our search term in the end. For example, if we search for ``bla`` the ``img`` tag will look like: ``<img src="/resources/images/tracker.gif?searchTerms=bla">``. So, we can take advantage of that by placing another ``img`` tag with ``onerror`` event. In our case it could look like the following:
+For this task we need to open the browser dev tools. When we do that, we should type something into the search box. We can observe that there is an ``img`` tag (because reasons) which has a ``src`` attribute with our search term in the end. For example, if we search for ``ss`` the ``img`` tag will look like: ``<img src="/resources/images/tracker.gif?searchTerms=ss">``. So, we can take advantage of that by placing another ``img`` tag with ``onerror`` event. In our case it could look like the following:
 
 :heavy_check_mark: ``"><img onerror="alert()" src=""/>``
+
+![Screenshot from 2022-01-23 00-01-44](https://user-images.githubusercontent.com/19424915/150657718-a2c23c3e-8c68-470e-bf7f-ac481649a794.png)
