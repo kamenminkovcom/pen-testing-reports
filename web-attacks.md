@@ -6,7 +6,7 @@ We can observe that clicking on a link for a given category leads to a new GET r
 
 Now, we can try exploiting the server by appending  ``'+union+select+null--+`` to the end of the url. This leads to a server error, so we can keep adding ``null`` into the url, until we guess the table column count. Once we have the correct number of **nulls**, the error disappers and we can access all the data from the corresponding SQL table.
 
-The desired request is ``'+union+select+null,null,null--+``
+:heavy_check_mark: The desired request is ``'+union+select+null,null,null--+``
 
 # [SQL Union from other tables](https://portswigger.net/web-security/sql-injection/union-attacks/lab-retrieve-data-from-other-tables)
 
@@ -14,7 +14,7 @@ We can use the same approach as in the previous task. The only difference will b
 
 Sending the following query param will give us the usernames and passwords we need:
 
-``category='+union+select+username,password+from+users--+``
+:heavy_check_mark: ``category='+union+select+username,password+from+users--+``
 
 We receive a list of usernames and passwords which contains the desired ``administrator``'s credentials:
 
@@ -23,7 +23,7 @@ username: administrator,
 password: ha9wahag68c5asob27tp
 ``
 
-# [SQL Login bypasss](https://portswigger.net/web-security/sql-injection/lab-login-bypass)
+# [SQL Login bypass](https://portswigger.net/web-security/sql-injection/lab-login-bypass)
 
 The application sends the username and the password to the server using the body of a POST requst. We can try sending **'** as one of the parameters in order to test if the server is SQL injection vulnarable. Luckly, it is. So, now we can imagine the SQL request the server makes to the database. It could be something like the following:
 
@@ -35,7 +35,7 @@ We do have the username which we would like to impersonate with. The only thing 
 
 Based on all of the above being said we can try to send a request to the server with the following POST body:
 
-``username=administrator&password='OR 1=1 -- ``
+:heavy_check_mark: ``username=administrator&password='OR 1=1 -- ``
 
 This is enough to log in as the ``administrator`` user.
 
@@ -43,38 +43,38 @@ This is enough to log in as the ``administrator`` user.
 
 We can use the same approach as in the previous task to make the ``WHERE`` expression to return ``true``. So, we can try sending the following as a query:
 
-``category='+OR+1=1+--+``
+:heavy_check_mark: ``category='+OR+1=1+--+``
 
 This will retrieve all the data we need.
 
 # [Time based SQL injection](https://portswigger.net/web-security/sql-injection/blind/lab-time-delays)
 
-This time we have to send an injection using the cooking in the request. So, we have to do something like the following:
+This time we have to send an injection using the cookie in the request. So, we have to do something like the following:
 
 ``TrackingId:id' || pg_sleep(10) -- ``
 
-However, we do not know the type and the version of the database, the ``sleep`` function is different in the different databases. We can try ``SELECT SLEEEP(10)``, ``WAITFOR DELAY '0:0:10'`` or ``SELECT pg_sleep(10)``. In our case the desired query is:
+However, we do not know the type and the version of the database, the ``sleep`` function differs in the different databases. We can try ``SELECT SLEEEP(10)``, ``WAITFOR DELAY '0:0:10'`` or ``SELECT pg_sleep(10)``. In our case the desired query is:
 
-``TrackingId:id' || pg_sleep(10) -- ``
+:heavy_check_mark: ``TrackingId:id' || pg_sleep(10) -- ``
 
 # [Simple OS Command injection](https://portswigger.net/web-security/os-command-injection/lab-simple)
 
 Clicking on the **Check Stock** button for a product sends a POST request to the server. We can try manipulating one of the params by attaching the ``whoami`` command. So, we will need to send a request containing something like the following:
 
-``productId=4&storeId=1|whoami``
+:heavy_check_mark: ``productId=4&storeId=1|whoami``
 
 # [Time delay OS Command Injection](https://portswigger.net/web-security/os-command-injection/lab-blind-time-delays)
 
 For this one we are dealing with a blind injection, meaning we will not receive a response feedback from the server, so we will have to somehow distinguish if our injection works or not. In our case, a request without a feedback is present when the "Feedback" form is sumbitted. We can try to append ``ping -c 10 localhost`` to every field and if we do not receive a response immediately, we will be sure that our injection works.
 
 In our case the desired POST body is:
-``name=name&email=name%40name.com||ping+-c+10+localhost||&subject=subject&message=something``
+:heavy_check_mark: ``name=name&email=name%40name.com||ping+-c+10+localhost||&subject=subject&message=something``
 
 # [Reflected XSS](https://portswigger.net/web-security/cross-site-scripting/reflected/lab-html-context-nothing-encoded)
 
 This is quite simple. We will just need to add, as a search term in the url, a script tag with some JavaScript code inside. Something like the following:
 
-``search=<script>alert("pishi%20i%20bqgai")</script>``
+:heavy_check_mark: ``search=<script>alert("pishi%20i%20bqgai")</script>``
 
 # [Stored XSS](https://portswigger.net/web-security/cross-site-scripting/stored/lab-html-context-nothing-encoded)
 
@@ -82,14 +82,14 @@ This time we send JavaScript code as a comment by using ``script`` tag, this wil
 
 ``<script>alert('Alert!')</script>``
 
-However, it could be much more dangerous like a script which collects all the client data.
+However, it could be much more dangerous, like a script which collects all the client data.
 
 The POST request body for the comment in our case will be:
 
-``postId=6&comment=%3Cscript%3Ealert%28%27something%27%29%3C%2Fscript%3E&name=name&email=name%40name.com&website=http%3A%2F%2Fname.com``
+:heavy_check_mark: ``postId=6&comment=%3Cscript%3Ealert%28%27something%27%29%3C%2Fscript%3E&name=name&email=name%40name.com&website=http%3A%2F%2Fname.com``
 
 # [DOM based XSS](https://portswigger.net/web-security/cross-site-scripting/dom-based/lab-document-write-sink)
 
-For this task we need to open the browser dev tools. When we do that, we should type something into the search box. We can observe that there is an ``img`` tag (because reasons) which has a ``src`` attribute with our search term to the end. For example, if we search for ``bla`` the ``img`` tag will look like: ``<img src="/resources/images/tracker.gif?searchTerms=bla">``. So, we can take advantage of that by placing another ``img`` tag with ``onerror`` event. In our case it could look like the following:
+For this task we need to open the browser dev tools. When we do that, we should type something into the search box. We can observe that there is an ``img`` tag (because reasons) which has a ``src`` attribute with our search term in the end. For example, if we search for ``bla`` the ``img`` tag will look like: ``<img src="/resources/images/tracker.gif?searchTerms=bla">``. So, we can take advantage of that by placing another ``img`` tag with ``onerror`` event. In our case it could look like the following:
 
-``"><img onerror="alert()" src=""/>``
+:heavy_check_mark: ``"><img onerror="alert()" src=""/>``
