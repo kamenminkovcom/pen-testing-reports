@@ -6,7 +6,7 @@ We can observe that clicking on a link for a given category leads to a new GET r
 
 Now, we can try exploiting the server by appending  ``'+union+select+null--+`` to the end of the url. This leads to a server error, so we can keep adding ``null`` into the url, until we guess the table column count. Once we have the correct number of **nulls**, the error disappers and we can access all the data from the corresponding SQL table.
 
-:heavy_check_mark: The desired request is ``'+union+select+null,null,null--+``
+The desired request is ``'+union+select+null,null,null--+``
 
 ![Screenshot from 2022-01-23 00-55-08](https://user-images.githubusercontent.com/19424915/150658016-e56f3c4a-b944-4574-a769-48e025b98889.png)
 
