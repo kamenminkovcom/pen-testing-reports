@@ -16,7 +16,7 @@ We can use the same approach as in the previous task. The only difference will b
 
 Sending the following query param will give us the usernames and passwords we need:
 
-:heavy_check_mark: ``category='+union+select+username,password+from+users--+``
+``category='+union+select+username,password+from+users--+``
 
 We receive a list of usernames and passwords which contains the desired ``administrator``'s credentials:
 
@@ -40,7 +40,7 @@ We do have the username which we would like to impersonate with. The only thing 
 
 Based on all of the above being said we can try to send a request to the server with the following POST body:
 
-:heavy_check_mark: ``username=administrator&password='OR 1=1 -- ``
+``username=administrator&password='OR 1=1 -- ``
 
 This is enough to log in as the ``administrator`` user.
 
@@ -50,7 +50,7 @@ This is enough to log in as the ``administrator`` user.
 
 We can use the same approach as in the previous task to make the ``WHERE`` expression to return ``true``. So, we can try sending the following as a query:
 
-:heavy_check_mark: ``category='+OR+1=1+--+``
+``category='+OR+1=1+--+``
 
 This will retrieve all the data we need.
 
@@ -64,7 +64,7 @@ This time we have to send an injection using the cookie in the request. So, we h
 
 However, we do not know the type and the version of the database, the ``sleep`` function differs in the different databases. We can try ``SELECT SLEEEP(10)``, ``WAITFOR DELAY '0:0:10'`` or ``SELECT pg_sleep(10)``. In our case the desired query is:
 
-:heavy_check_mark: ``TrackingId:id' || pg_sleep(10) -- ``
+``TrackingId:id' || pg_sleep(10) -- ``
 
 ![time-based-sql](https://user-images.githubusercontent.com/19424915/150657655-4a828581-e8b2-418f-aff3-9e74b49205db.png)
 
@@ -72,7 +72,7 @@ However, we do not know the type and the version of the database, the ``sleep`` 
 
 Clicking on the **Check Stock** button for a product sends a POST request to the server. We can try manipulating one of the params by attaching the ``whoami`` command. So, we will need to send a request containing something like the following:
 
-:heavy_check_mark: ``productId=4&storeId=1|whoami``
+``productId=4&storeId=1|whoami``
 
 ![whoami](https://user-images.githubusercontent.com/19424915/150657667-e24a7784-5e64-49c8-b962-190eeb57851d.png)
 
@@ -81,7 +81,7 @@ Clicking on the **Check Stock** button for a product sends a POST request to the
 For this one we are dealing with a blind injection, meaning we will not receive a response feedback from the server, so we will have to somehow distinguish if our injection works or not. In our case, a request without a feedback is present when the "Feedback" form is sumbitted. We can try to append ``ping -c 10 localhost`` to every field and if we do not receive a response immediately, we will be sure that our injection works.
 
 In our case the desired POST body is:
-:heavy_check_mark: ``name=name&email=name%40name.com||ping+-c+10+localhost||&subject=subject&message=something``
+``name=name&email=name%40name.com||ping+-c+10+localhost||&subject=subject&message=something``
 
 ![time-delay-os](https://user-images.githubusercontent.com/19424915/150657683-6b4f074b-c873-4aa1-b7e7-7cfc659d5119.png)
 
@@ -89,7 +89,7 @@ In our case the desired POST body is:
 
 This is quite simple. We will just need to add, as a search term in the url, a script tag with some JavaScript code inside. Something like the following:
 
-:heavy_check_mark: ``search=<script>alert("pishi%20i%20bqgai")</script>``
+``search=<script>alert("pishi%20i%20bqgai")</script>``
 
 # [Stored XSS](https://portswigger.net/web-security/cross-site-scripting/stored/lab-html-context-nothing-encoded)
 
@@ -101,12 +101,12 @@ However, it could be much more dangerous, like a script which collects all the c
 
 The POST request body for the comment in our case will be:
 
-:heavy_check_mark: ``postId=6&comment=%3Cscript%3Ealert%28%27something%27%29%3C%2Fscript%3E&name=name&email=name%40name.com&website=http%3A%2F%2Fname.com``
+``postId=6&comment=%3Cscript%3Ealert%28%27something%27%29%3C%2Fscript%3E&name=name&email=name%40name.com&website=http%3A%2F%2Fname.com``
 
 # [DOM based XSS](https://portswigger.net/web-security/cross-site-scripting/dom-based/lab-document-write-sink)
 
 For this task we need to open the browser dev tools. When we do that, we should type something into the search box. We can observe that there is an ``img`` tag (because reasons) which has a ``src`` attribute with our search term in the end. For example, if we search for ``ss`` the ``img`` tag will look like: ``<img src="/resources/images/tracker.gif?searchTerms=ss">``. So, we can take advantage of that by placing another ``img`` tag with ``onerror`` event. In our case it could look like the following:
 
-:heavy_check_mark: ``"><img onerror="alert()" src=""/>``
+``"><img onerror="alert()" src=""/>``
 
 ![Screenshot from 2022-01-23 00-01-44](https://user-images.githubusercontent.com/19424915/150657718-a2c23c3e-8c68-470e-bf7f-ac481649a794.png)
